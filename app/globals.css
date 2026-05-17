@@ -1,0 +1,50 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --color-ios-green: #34C759;
+  --color-ios-red: #FF3B30;
+  --color-ios-orange: #FF9500;
+  --color-ios-blue: #007AFF;
+  --color-ios-bg: #FFFFFF;
+  --color-ios-card: #F2F2F7;
+}
+
+@layer base {
+  body {
+    @apply bg-ios-bg text-black font-sans antialiased selection:bg-ios-blue/20;
+  }
+
+  .ios-glass {
+    @apply bg-white/70 backdrop-blur-xl border border-white/20;
+  }
+
+  .ios-card {
+    @apply bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-black/5 overflow-hidden;
+  }
+
+  .ios-button-primary {
+    @apply bg-black text-white px-6 py-3 rounded-full font-medium active:scale-95 transition-transform;
+  }
+
+  .ios-button-secondary {
+    @apply bg-ios-card text-black px-6 py-3 rounded-full font-medium active:scale-95 transition-transform hover:bg-black/5;
+  }
+}
+
+/* Custom scrollbar for minimalist look */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #E5E5EA;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C7C7CC;
+}

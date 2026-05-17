@@ -1,0 +1,6 @@
+{
+  "name": "SOC2040: 24h SysProg Mastery",
+  "description": "Minimalist x86-64 prep site for System Programming. Interactive theory (Slides 11-16), assembly playground, and MCQ trainer.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
