@@ -11,23 +11,197 @@ export interface SlideData {
 
 export const slides: SlideData[] = [
   {
-    id: '11',
-    title: 'Special Arithmetic Instructions',
+    id: '1',
+    title: 'Computer System Components',
     topics: [
       {
-        title: 'Умножение (imulq)',
-        content: 'В x86-64 есть две формы умножения. Обычная (2 операнда) обрезает результат до 64 бит. Полная (1 операнд) умножает %rax на источник и кладет результат в пару %rdx:%rax (128 бит).',
-        code: 'imulq %rbx, %rax    # rax = rax * rbx (64-bit)\nimulq %rbx           # rdx:rax = rax * rbx (128-bit product)',
+        title: 'Что такое компьютер?',
+        content: 'Это быстрая электронная машина, которая принимает цифровой ввод, обрабатывает его по внутренним инструкциям (программам) и выдает результат.',
       },
       {
-        title: 'Деление (idivq)',
-        content: 'Деление всегда делит 128-битное число в %rdx:%rax на делитель. Перед делением знаковых чисел используй `cqto` для расширения %rax до %rdx:%rax.',
-        code: 'movq $17, %rax\ncqto                 # sign-extend rax into rdx:rax\nidivq %rcx           # rax = quotient, rdx = remainder',
+        title: 'Основные части',
+        content: 'CPU (процессор), Memory (память), I/O (ввод-вывод) и Interconnects (шины/сети).',
+        table: {
+          headers: ['Компонент', 'Функция'],
+          rows: [
+            ['CPU', 'Исполняет инструкции (Datapath + Control)'],
+            ['Memory', 'Хранит код и данные'],
+            ['I/O Subsystem', 'Связь с внешним миром (диск, сеть)'],
+            ['Buses', 'Магистрали для передачи адресов и данных'],
+          ]
+        }
+      }
+    ]
+  },
+  {
+    id: '2',
+    title: 'Memory Hierarchy',
+    topics: [
+      {
+        title: 'Иерархия памяти',
+        content: 'Чем ближе к процессору, тем быстрее, меньше и дороже. Данные копируются между уровнями блоками.',
+        table: {
+          headers: ['Уровень', 'Тип', 'Размер', 'Скорость'],
+          rows: [
+            ['L0', 'Registers', 'сотни байт', '0.5 ns'],
+            ['L1-L2', 'SRAM Cache', 'КБ - МБ', '1-10 ns'],
+            ['L3', 'SRAM Shared', 'МБ', '10-30 ns'],
+            ['Main Memory', 'DRAM', 'ГБ', '50-100 ns'],
+            ['Local Disk', 'SSD/HDD', 'ТБ', 'мс / мкс'],
+          ]
+        }
       },
       {
-        title: 'ADC и SBB (Carry/Borrow)',
-        content: 'Используются для арифметики произвольной точности (multiprecision). Складывают или вычитают с учетом флага переноса (CF).',
-        code: '# Add 128-bit numbers (A=rdx:rax, B=rcx:rbx)\naddq %rbx, %rax      # add low parts\nadcq %rcx, %rdx      # add high parts + carry',
+        title: 'Volatile vs Non-Volatile',
+        content: 'Volatile (SRAM, DRAM) теряет данные при выключении. Non-volatile (Flash, ROM, Disk) сохраняет.',
+      }
+    ]
+  },
+  {
+    id: '3',
+    title: 'Programmer\'s View & ISA',
+    topics: [
+      {
+        title: 'Абстракции',
+        content: 'Программист высокого уровня (C, Python) не видит регистры. Программист Assembly работает напрямую с ISA (Instruction Set Architecture).',
+      },
+      {
+        title: 'ISA — это контракт',
+        content: 'ISA определяет: типы данных, набор инструкций (MOV, ADD...), регистры и модель памяти. Это "алфавит" процессора.',
+      }
+    ]
+  },
+  {
+    id: '4',
+    title: 'Binary & Hex Fundamentals',
+    topics: [
+      {
+        title: 'Почему бинарный?',
+        content: 'Электрические сигналы проще делить на 2 уровня (High/Low), чем на 10. Это защищает от шума и помех. Биты — атомы информации.',
+      },
+      {
+        title: 'Hexadecimal (Base-16)',
+        content: 'Компактная запись битов. 1 символ Hex = 4 бита (nibble). Обозначается префиксом 0x.',
+        code: '0xA = 1010 (binary)\n0xFF = 255 (decimal)\n0x10 = 16 (decimal)',
+      }
+    ]
+  },
+  {
+    id: '5',
+    title: 'Data Sizes & Endianness',
+    topics: [
+      {
+        title: 'Размеры в x86-64',
+        content: 'Byte (8b), Word (16b), Double Word (32b), Quad Word (64b).',
+        table: {
+          headers: ['C type', 'x86 Name', 'Bytes'],
+          rows: [
+            ['char', 'Byte', '1'],
+            ['short', 'Word', '2'],
+            ['int / float', 'Double Word', '4'],
+            ['long / double', 'Quad Word', '8'],
+            ['pointer', 'Quad Word', '8'],
+          ]
+        }
+      },
+      {
+        title: 'Little-Endian',
+        content: 'x86-64 использует Little-Endian: младший байт числа хранится по меньшему адресу (задом наперед для человека).',
+        code: 'Value: 0x12345678\nMemory: [0x78][0x56][0x34][0x12]',
+      }
+    ]
+  },
+  {
+    id: '6',
+    title: 'Floating Point (IEEE 754)',
+    topics: [
+      {
+        title: 'Fixed vs Floating',
+        content: 'Fixed-point имеет фиксированное положение точки, что ограничивает диапазон. Floating-point позволяет точке "плавать", используя экспоненту.',
+      },
+      {
+        title: 'Формат IEEE 754',
+        content: 'Число = (-1)^S * M * 2^E. Состоит из Sign (знак), Exponent (экспонента с байасом) и Fraction (мантисса).',
+        table: {
+          headers: ['Precision', 'Bits', 'Sign', 'Exp', 'Frac', 'Bias'],
+          rows: [
+            ['Single (float)', '32', '1', '8', '23', '127'],
+            ['Double (double)', '64', '1', '11', '52', '1023'],
+          ]
+        }
+      }
+    ]
+  },
+  {
+    id: '7',
+    title: 'FP Special Values & Rounding',
+    topics: [
+      {
+        title: 'Специальные значения',
+        content: 'Zero (all 0s), Infinity (Exp all 1s, Frac 0), NaN (Exp all 1s, Frac non-zero).',
+      },
+      {
+        title: 'Rounding Modes',
+        content: 'Default: Round-to-even (Banker\'s rounding). Помогает избежать статистического смещения при накоплении ошибок.',
+        code: '1.5 -> 2\n2.5 -> 2\n(Округляем к ближайшему четному, если посередине)',
+      }
+    ]
+  },
+  {
+    id: '8',
+    title: 'Integer & 2\'s Complement',
+    topics: [
+      {
+        title: 'Two\'s Complement',
+        content: 'Стандарт для знаковых чисел. Инвертируем биты и прибавляем 1. Самый старший бит имеет вес -2^(w-1).',
+        code: 'Value 5 (8-bit): 0000 0101\nInvert: 1111 1010\nAdd 1: 1111 1011 (This is -5)',
+      },
+      {
+        title: 'Диапазон (8-bit)',
+        content: 'Unsigned: 0 to 255. Signed: -128 to 127. Отрицательных чисел на одно больше из-за нуля.',
+      }
+    ]
+  },
+  {
+    id: '9',
+    title: 'Arithmetic & Overflow',
+    topics: [
+      {
+        title: 'Unsigned Overflow',
+        content: 'Происходит, когда результат сложения >= 2^W. В C результат просто урезается (modulo 2^W).',
+      },
+      {
+        title: 'Signed Overflow',
+        content: 'Происходит, когда (Pos+Pos=Neg) или (Neg+Neg=Pos). Знак результата становится неверным из-за переноса в знаковый бит.',
+      }
+    ]
+  },
+  {
+    id: '10',
+    title: 'Shifts & Strength Reduction',
+    topics: [
+      {
+        title: 'Сдвиги',
+        content: 'SHL/SAL (влево) — умножение на 2^k. SHR (логический вправо) — для unsigned. SAR (арифметический вправо) — сохраняет знак для signed.',
+      },
+      {
+        title: 'Округление при делении',
+        content: 'Обычный сдвиг вправо для отрицательных чисел округляет "вниз" (к -inf). В C деление округляет к нулю. Для коррекции добавляется байас.',
+        code: 'Formula: (x + (1<<k) - 1) >> k',
+      }
+    ]
+  },
+  {
+    id: '11',
+    title: 'Special Arithmetic',
+    topics: [
+      {
+        title: 'Умножение imulq',
+        content: 'Одна форма (2 операнда) урезает до 64 бит. Вторая (1 операнд) выдает 128 бит в %rdx:%rax.',
+      },
+      {
+        title: 'Деление idivq',
+        content: 'Делит %rdx:%rax на операнд. rax = частное, rdx = остаток. Требует cqto перед вызовом для знаковых.',
       }
     ]
   },
@@ -36,54 +210,26 @@ export const slides: SlideData[] = [
     title: 'Control Structures',
     topics: [
       {
-        title: 'Condition Codes (Флаги)',
-        content: 'Регистры состояния, которые меняются после команд. `ZF` (Zero), `SF` (Sign), `CF` (Carry), `OF` (Overflow).',
-        table: {
-          headers: ['Флаг', 'Название', 'Когда устанавливается'],
-          rows: [
-            ['ZF', 'Zero Flag', 'Результат равен 0'],
-            ['SF', 'Sign Flag', 'Результат отрицательный'],
-            ['CF', 'Carry Flag', 'Беззнаковое переполнение'],
-            ['OF', 'Overflow Flag', 'Знаковое переполнение'],
-          ]
-        }
+        title: 'Condition Codes',
+        content: 'ZF (Zero), SF (Sign), CF (Carry), OF (Overflow). Сетятся после add, sub, and, xor... НЕ сетятся после lea и mov.',
       },
       {
-        title: 'CMP и TEST',
-        content: '`cmpq src, dst` вычисляет `dst - src` (как sub), но только меняет флаги. `testq src, dst` вычисляет `dst & src` (как and).',
-        code: 'cmpq %rbx, %rax    # rax - rbx, set flags\ntestq %rax, %rax   # rax & rax, check if zero',
-      },
-      {
-        title: 'System Calls',
-        content: 'Запрос к ОС. В Linux x86-64 номер syscall кладется в %rax, аргументы в %rdi, %rsi, %rdx...',
-        table: {
-          headers: ['rax', 'Name', 'rdi', 'rsi', 'rdx'],
-          rows: [
-            ['0', 'read', 'fd', 'buf', 'count'],
-            ['1', 'write', 'fd', 'buf', 'count'],
-            ['60', 'exit', 'status', '-', '-'],
-          ]
-        }
+        title: 'CMP vs TEST',
+        content: 'CMP = вычитание (только флаги). TEST = логическое И (только флаги).',
       }
     ]
   },
   {
     id: '13',
-    title: 'Branches & Jump Tables',
+    title: 'Loops & Switch',
     topics: [
       {
-        title: 'Goto Code',
-        content: 'Компилятор преобразует `if-else` в переходы `jX`. Запоминай инверсию: `if (a > b)` часто превращается в `cmp + jle` (прыжок если НЕ больше, чтобы пропустить тело).',
+        title: 'Реализация циклов',
+        content: 'do-while (проверка в конце), while (jump-to-middle или guarded-do). for — это синтаксический сахар над while.',
       },
       {
-        title: 'Conditional Move (cmov)',
-        content: 'Современная альтернатива перескокам. Вычисляет оба варианта и выбирает один на основе флагов. Быстрее, так как нет branch misprediction.',
-        code: 'cmovle %rdx, %rax   # if flags say "less or equal", move rdx to rax',
-      },
-      {
-        title: 'Jump Tables (Switch)',
-        content: 'Для плотных `switch` (case 1, 2, 3...) компилятор делает массив адресов. Прыжок выполняется в O(1).',
-        code: 'jmp *.L4(,%rdi,8)   # indirect jump using jump table at label .L4',
+        title: 'Jump Tables',
+        content: 'Используются для switch с плотными значениями. Прыжок по индексу в массиве адресов. O(1) время работы.',
       }
     ]
   },
@@ -92,17 +238,12 @@ export const slides: SlideData[] = [
     title: 'Procedures & Stack',
     topics: [
       {
-        title: 'Calling Convention (ABI)',
-        content: 'Как передаем аргументы: %rdi, %rsi, %rdx, %rcx, %r8, %r9. Возврат в %rax.',
+        title: 'ABI & Registers',
+        content: 'Аргументы: rdi, rsi, rdx, rcx, r8, r9. Возврат: rax. Выравнивание стека 16 байт перед call.',
       },
       {
-        title: 'Caller vs Callee Saved',
-        content: 'Caller-saved (rax, rcx, rdx...): вызывающий должен сохранить сам. Callee-saved (rbx, rbp, r12-r15): функция ОБЯЗАНА восстановить их перед выходом.',
-      },
-      {
-        title: 'Stack Alignment',
-        content: 'Перед вызовом любой функции из библиотеки C (printf, scanf), `%rsp` должен быть кратен 16.',
-        code: 'pushq %rbp\nmovq %rsp, %rbp\nandq $-16, %rsp # alignment check',
+        title: 'Caller vs Callee',
+        content: 'Caller-saved (rax, rcx, rdx...): "используй на свой страх и риск". Callee-saved (rbx, rbp, r12-r15): "верни как было".',
       }
     ]
   },
@@ -111,35 +252,26 @@ export const slides: SlideData[] = [
     title: 'Linking',
     topics: [
       {
-        title: 'ELF Format',
-        content: '.text (код), .data (инициализированные глобалки), .bss (неинициализированные, 0 в памяти), .rodata (константы).',
+        title: 'ELF Секции',
+        content: '.text (код), .data (init), .bss (uninit/zero), .rodata (const/strings).',
       },
       {
         title: 'Symbol Resolution',
-        content: 'Сильные символы: функции, инициализированные данные. Слабые: неинициализированные. Ошибка, если два сильных с одним именем.',
-      },
-      {
-        title: 'Static vs Dynamic',
-        content: 'Static: код библиотеки вшит в .exe (Link time). Dynamic: библиотека (.so) подгружается при запуске (Load time).',
+        content: 'Strong (functions, data with init) vs Weak (uninit data). Strong+Strong = Error. Strong+Weak = Strong wins.',
       }
     ]
   },
   {
     id: '16',
-    title: 'Processes',
+    title: 'ECF & Processes',
     topics: [
       {
         title: 'fork()',
-        content: 'Создает копию процесса. Возвращает 0 в дочернем, PID ребенка в родительском. Память копируется (Copy-on-write).',
-        code: 'pid_t pid = fork();\nif (pid == 0) { /* child */ }',
+        content: 'Создает копию процесса. Возвращает 0 в ребенке, PID в родителе.',
       },
       {
-        title: 'Zombies & Reaping',
-        content: 'Процесс завершился, но родитель не вызвал `waitpid()`. "Живой труп" занимает место в таблице процессов.',
-      },
-      {
-        title: 'Waitpid',
-        content: 'Используется для ожидания завершения ребенка и очистки ресурсов (reaping).',
+        title: 'Zombies & Orphans',
+        content: 'Zombie: завершился, но не пожат (waitpid). Orphan: родитель умер, усыновляется процессом init (PID 1).',
       }
     ]
   }

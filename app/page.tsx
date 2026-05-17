@@ -18,9 +18,9 @@ import Link from 'next/link';
 const menuItems = [
   {
     title: 'Теория (Slides)',
-    desc: 'Учи Slide 11–16 простыми словами',
+    desc: 'Учи Slide 1–16 простыми словами',
     icon: BookOpen,
-    href: '/theory/11',
+    href: '/theory/1',
     color: 'ios-blue',
   },
   {
