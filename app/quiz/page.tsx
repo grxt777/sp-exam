@@ -15,7 +15,11 @@ import {
 import Link from 'next/link';
 import confetti from 'canvas-confetti';
 
+import { useLanguage } from '@/context/LanguageContext';
+import { LanguageToggleMini } from '@/components/LanguageSwitcher';
+
 export default function QuizPage() {
+  const { t, language } = useLanguage();
   const [filter, setFilter] = useState<string>('all');
   const [shuffledQuestions, setShuffledQuestions] = useState<(Question & { shuffledOptions: string[], newCorrectIndex: number })[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -31,7 +35,8 @@ export default function QuizPage() {
     const shuffled = [...base].sort(() => Math.random() - 0.5);
     
     const withShuffledOptions = shuffled.map(q => {
-      const optionsWithMetadata = q.options.map((opt, originalIdx) => ({
+      const currentOptions = q.options[language];
+      const optionsWithMetadata = currentOptions.map((opt, originalIdx) => ({
         text: opt,
         isCorrect: originalIdx === q.correct
       }));
@@ -46,12 +51,14 @@ export default function QuizPage() {
       };
     });
     
-    setShuffledQuestions(withShuffledOptions);
-    setCurrentIndex(0);
-    setUserChoices({});
-    setScore(0);
-    setIsFinished(false);
-  }, [filter]);
+    Promise.resolve().then(() => {
+      setShuffledQuestions(withShuffledOptions);
+      setCurrentIndex(0);
+      setUserChoices({});
+      setScore(0);
+      setIsFinished(false);
+    });
+  }, [filter, language]);
 
   const currentQuestion = shuffledQuestions[currentIndex];
   const isAnswered = currentIndex in userChoices;
@@ -86,17 +93,6 @@ export default function QuizPage() {
     }
   };
 
-  const resetQuiz = () => {
-    setFilter(filter); // Trigger re-shuffle if needed or just re-run the effect
-    // To simplify, let's just use a state to force re-shuffle
-    setFilter(prev => {
-      const current = prev;
-      setFilter(''); // temp
-      setTimeout(() => setFilter(current), 10);
-      return prev;
-    });
-  };
-
   if (isFinished) {
     return (
       <div className="min-h-screen bg-ios-bg flex items-center justify-center p-6">
@@ -109,15 +105,15 @@ export default function QuizPage() {
             <CheckCircle2 size={48} />
           </div>
           <div className="space-y-2">
-            <h1 className="text-4xl font-bold tracking-tight">Quiz Complete!</h1>
-            <p className="text-gray-500 font-medium text-lg">You scored {score} out of {shuffledQuestions.length}</p>
+            <h1 className="text-4xl font-bold tracking-tight">{t('Тест завершен!', 'Quiz Complete!')}</h1>
+            <p className="text-gray-500 font-medium text-lg">{t(`Вы набрали ${score} из ${shuffledQuestions.length}`, `You scored ${score} out of ${shuffledQuestions.length}`)}</p>
           </div>
           <div className="text-6xl font-black text-black tracking-tighter">
             {Math.round((score / shuffledQuestions.length) * 100)}%
           </div>
           <div className="pt-4 flex flex-col gap-3">
-            <button onClick={() => setIsFinished(false)} className="ios-button-primary py-4">Review Answers</button>
-            <Link href="/" className="ios-button-secondary py-4">Back to Dashboard</Link>
+            <button onClick={() => setIsFinished(false)} className="ios-button-primary py-4">{t('Просмотр ответов', 'Review Answers')}</button>
+            <Link href="/" className="ios-button-secondary py-4">{t('На главную', 'Back to Dashboard')}</Link>
           </div>
         </motion.div>
       </div>
@@ -130,15 +126,18 @@ export default function QuizPage() {
       <nav className="sticky top-0 z-50 ios-glass border-b border-black/5 px-6 py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 hover:opacity-70 transition-opacity">
           <ArrowLeft size={20} />
-          <span className="font-semibold hidden sm:inline tracking-tight">Dashboard</span>
+          <span className="font-semibold hidden sm:inline tracking-tight">{t('Главная', 'Dashboard')}</span>
         </Link>
         <div className="text-center">
-          <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">Progress</div>
+          <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">{t('Прогресс', 'Progress')}</div>
           <div className="font-bold tabular-nums tracking-tight">{Object.keys(userChoices).length} / {shuffledQuestions.length}</div>
         </div>
-        <div className="text-right">
-          <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">Score</div>
-          <div className="font-bold tabular-nums tracking-tight text-ios-green">{score}</div>
+        <div className="flex items-center gap-4">
+          <div className="text-right flex flex-col items-end">
+            <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">{t('Счет', 'Score')}</div>
+            <div className="font-bold tabular-nums tracking-tight text-ios-green">{score}</div>
+          </div>
+          <LanguageToggleMini />
         </div>
       </nav>
 
@@ -154,7 +153,7 @@ export default function QuizPage() {
                 : 'bg-ios-card text-gray-400 hover:bg-gray-200'
               }`}
             >
-              {id === 'all' ? 'Все темы' : `Slide ${id}`}
+              {id === 'all' ? t('Все темы', 'All topics') : `Slide ${id}`}
             </button>
           ))}
         </div>
@@ -173,7 +172,7 @@ export default function QuizPage() {
             {/* Question Card */}
             <AnimatePresence mode="wait">
               <motion.div
-                key={`${currentIndex}-${filter}`}
+                key={`${currentIndex}-${filter}-${language}`}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
@@ -183,14 +182,14 @@ export default function QuizPage() {
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
                     <div className="text-ios-blue font-bold text-xs uppercase tracking-widest">
-                      Вопрос {currentIndex + 1} из {shuffledQuestions.length}
+                      {t(`Вопрос ${currentIndex + 1} из ${shuffledQuestions.length}`, `Question ${currentIndex + 1} of ${shuffledQuestions.length}`)}
                     </div>
                     <div className="text-gray-400 font-bold text-[10px] uppercase tracking-widest">
                       Slide {currentQuestion.slideId}
                     </div>
                   </div>
                   <h1 className="text-2xl md:text-3xl font-bold leading-tight tracking-tight">
-                    {currentQuestion.question}
+                    {currentQuestion.question[language]}
                   </h1>
                 </div>
 
@@ -234,9 +233,9 @@ export default function QuizPage() {
                     animate={{ opacity: 1, height: 'auto' }}
                     className="ios-card bg-gray-50 p-6 border-none shadow-none"
                   >
-                    <h4 className="font-bold text-xs uppercase tracking-widest text-gray-400 mb-2">Объяснение</h4>
+                    <h4 className="font-bold text-xs uppercase tracking-widest text-gray-400 mb-2">{t('Объяснение', 'Explanation')}</h4>
                     <p className="text-gray-600 leading-relaxed font-medium">
-                      {currentQuestion.explanation}
+                      {currentQuestion.explanation[language]}
                     </p>
                   </motion.div>
                 )}
@@ -257,7 +256,7 @@ export default function QuizPage() {
                     onClick={() => setIsFinished(true)}
                     className="ios-button-primary flex-1 py-5 text-xl font-bold bg-ios-green shadow-lg shadow-ios-green/20"
                   >
-                    Завершить тест
+                    {t('Завершить тест', 'Finish Quiz')}
                   </button>
                 ) : (
                   <button
@@ -265,7 +264,7 @@ export default function QuizPage() {
                     disabled={!isAnswered}
                     className="ios-button-primary flex-1 py-5 text-xl font-bold flex items-center justify-center gap-2 disabled:opacity-30"
                   >
-                    {currentIndex === shuffledQuestions.length - 1 ? 'Finish' : 'Далее'} <ChevronRight size={24} />
+                    {currentIndex === shuffledQuestions.length - 1 ? t('Завершить', 'Finish') : t('Далее', 'Next')} <ChevronRight size={24} />
                   </button>
                 )}
               </div>
@@ -273,8 +272,8 @@ export default function QuizPage() {
           </div>
         ) : (
           <div className="text-center py-20 space-y-4">
-            <h2 className="text-2xl font-bold">Нет вопросов в этой категории</h2>
-            <button onClick={() => setFilter('all')} className="ios-button-primary">Сбросить фильтр</button>
+            <h2 className="text-2xl font-bold">{t('Нет вопросов в этой категории', 'No questions in this category')}</h2>
+            <button onClick={() => setFilter('all')} className="ios-button-primary">{t('Сбросить фильтр', 'Reset filter')}</button>
           </div>
         )}
       </div>

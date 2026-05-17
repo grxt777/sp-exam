@@ -134,7 +134,7 @@ export default function MockExamPage() {
                 <div>
                   <div className="text-[10px] uppercase font-bold text-ios-red tracking-widest mb-2">Final Challenge</div>
                   <h3 className="text-2xl font-bold leading-tight mb-2 tracking-tight text-black">Programming Task</h3>
-                  <p className="text-gray-500 font-medium leading-relaxed">Напишите законченный код на ассемблере x86-64, который использует системный вызов `write` для вывода "OK" и завершается.</p>
+                  <p className="text-gray-500 font-medium leading-relaxed">Напишите законченный код на ассемблере x86-64, который использует системный вызов `write` для вывода &quot;OK&quot; и завершается.</p>
                 </div>
                 <div className="bg-black p-6 rounded-2xl border border-white/10 shadow-inner">
                   <textarea className="w-full h-80 bg-transparent text-ios-green font-mono text-sm resize-none focus:outline-none leading-relaxed" defaultValue={`.data

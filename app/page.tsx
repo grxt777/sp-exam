@@ -15,90 +15,100 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
-const menuItems = [
-  {
-    title: 'Теория (Slides)',
-    desc: 'Учи Slide 1–16 простыми словами',
-    icon: BookOpen,
-    href: '/theory/1',
-    color: 'ios-blue',
-  },
-  {
-    title: 'MCQ Тренажёр',
-    desc: '50+ вопросов Section A с разбором',
-    icon: Trophy,
-    href: '/quiz',
-    color: 'ios-green',
-  },
-  {
-    title: 'Playground',
-    desc: 'Визуализация Assembly и стека',
-    icon: Cpu,
-    href: '/playground',
-    color: 'ios-orange',
-  },
-  {
-    title: 'Mock Exam',
-    desc: 'Полная имитация финала (A+B+C)',
-    icon: Gamepad2,
-    href: '/mock-exam',
-    color: 'ios-red',
-  },
-  {
-    title: '24h План',
-    desc: 'Расписание "с нуля до 100"',
-    icon: Clock,
-    href: '/plan',
-    color: 'black',
-  },
-  {
-    title: 'Визуализации',
-    desc: 'fork() tree, ELF, Stack frames',
-    icon: Layers,
-    href: '/visuals',
-    color: 'ios-orange',
-  },
-  {
-    title: 'Шпаргалки',
-    desc: 'Syscall table, регистры, ABI',
-    icon: FileText,
-    href: '/cheat-sheet',
-    color: 'gray-500',
-  }
-];
+import { useLanguage } from '@/context/LanguageContext';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 export default function Home() {
+  const { t } = useLanguage();
+
+  const menuItems = [
+    {
+      title: t('Теория (Slides)', 'Theory (Slides)'),
+      desc: t('Учи Slide 1–16 простыми словами', 'Learn Slides 1–16 in simple terms'),
+      icon: BookOpen,
+      href: '/theory/1',
+      color: 'ios-blue',
+    },
+    {
+      title: t('MCQ Тренажёр', 'MCQ Trainer'),
+      desc: t('50+ вопросов Section A с разбором', '50+ Section A questions with explanations'),
+      icon: Trophy,
+      href: '/quiz',
+      color: 'ios-green',
+    },
+    {
+      title: t('Playground', 'Playground'),
+      desc: t('Визуализация Assembly и стека', 'Viz for Assembly and Stack'),
+      icon: Cpu,
+      href: '/playground',
+      color: 'ios-orange',
+    },
+    {
+      title: t('Mock Exam', 'Mock Exam'),
+      desc: t('Полная имитация финала (A+B+C)', 'Full exam simulation (A+B+C)'),
+      icon: Gamepad2,
+      href: '/mock-exam',
+      color: 'ios-red',
+    },
+    {
+      title: t('24h План', '24h Plan'),
+      desc: t('Расписание "с нуля до 100"', 'Schedule from "zero to hero"'),
+      icon: Clock,
+      href: '/plan',
+      color: 'black',
+    },
+    {
+      title: t('Визуализации', 'Visuals'),
+      desc: t('fork() tree, ELF, Stack frames', 'fork() tree, ELF, Stack frames'),
+      icon: Layers,
+      href: '/visuals',
+      color: 'ios-orange',
+    },
+    {
+      title: t('Шпаргалки', 'Cheat Sheets'),
+      desc: t('Syscall table, регистры, ABI', 'Syscall table, registers, ABI'),
+      icon: FileText,
+      href: '/cheat-sheet',
+      color: 'gray-500',
+    }
+  ];
+
   return (
     <main className="min-h-screen p-6 md:p-12 mb-20 bg-ios-bg">
       <div className="max-w-4xl mx-auto space-y-12">
         {/* Header */}
-        <header className="space-y-4">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex items-center gap-2 text-ios-blue font-semibold uppercase tracking-wider text-xs"
-          >
-            <Zap size={14} className="fill-current" />
-            Exam Prep SOC2040
-          </motion.div>
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-4xl md:text-5xl font-bold tracking-tight"
-          >
-            System Programming <br />
-            За 24 часа.
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-gray-500 text-lg"
-          >
-            Минималистичный гид по x86-64, Linking и Процессам. <br />
-            Всё, что нужно для финала в одном месте.
-          </motion.p>
+        <header className="space-y-6">
+          <div className="flex justify-between items-start">
+            <div className="space-y-4">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex items-center gap-2 text-ios-blue font-semibold uppercase tracking-wider text-xs"
+              >
+                <Zap size={14} className="fill-current" />
+                Exam Prep SOC2040
+              </motion.div>
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="text-4xl md:text-5xl font-bold tracking-tight"
+              >
+                System Programming <br />
+                {t('За 24 часа.', 'In 24 hours.')}
+              </motion.h1>
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-gray-500 text-lg"
+              >
+                {t('Минималистичный гид по x86-64, Linking и Процессам.', 'Minimalist guide to x86-64, Linking, and Processes.')} <br />
+                {t('Всё, что нужно для финала в одном месте.', 'Everything you need for the final in one place.')}
+              </motion.p>
+            </div>
+            <LanguageSwitcher />
+          </div>
         </header>
 
         {/* Dashboard Grid */}
@@ -121,7 +131,7 @@ export default function Home() {
                     <p className="text-gray-500 font-normal leading-snug">{item.desc}</p>
                   </div>
                   <div className="mt-6 flex items-center text-xs font-bold text-gray-400 group-hover:text-black transition-colors uppercase tracking-widest">
-                    Перейти <ChevronRight size={14} className="ml-1" />
+                    {t('Перейти', 'Enter')} <ChevronRight size={14} className="ml-1" />
                   </div>
                 </div>
               </Link>
@@ -138,17 +148,17 @@ export default function Home() {
         >
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="space-y-1">
-              <h3 className="text-2xl font-bold tracking-tight text-white">Твой прогресс</h3>
-              <p className="text-white/60">До экзамена осталось совсем мало времени.</p>
+              <h3 className="text-2xl font-bold tracking-tight text-white">{t('Твой прогресс', 'Your Progress')}</h3>
+              <p className="text-white/60">{t('До экзамена осталось совсем мало времени.', 'Very little time left until the exam.')}</p>
             </div>
             <div className="flex items-center gap-6">
               <div className="text-center">
                 <div className="text-3xl font-bold text-white">0%</div>
-                <div className="text-[10px] text-white/40 uppercase tracking-widest font-bold">Охват тем</div>
+                <div className="text-[10px] text-white/40 uppercase tracking-widest font-bold">{t('Охват тем', 'Topics covered')}</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-white">0/50</div>
-                <div className="text-[10px] text-white/40 uppercase tracking-widest font-bold">MCQ решено</div>
+                <div className="text-[10px] text-white/40 uppercase tracking-widest font-bold">{t('MCQ решено', 'MCQ solved')}</div>
               </div>
             </div>
           </div>
